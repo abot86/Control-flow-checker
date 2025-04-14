@@ -4,86 +4,34 @@ module CFC_FSM (
     input wire flag,
     input wire [31:0] input_sig,
     output reg error,
-    output reg watchdog_timeout
+    output reg watchdog_timeout  // New output for watchdog timeout
 );
 
     parameter ERROR = 32'hFFFFFFFF;
-    parameter START = 32'h0;
-    parameter WATCHDOG_TIMEOUT_CYCLES = 500;
-
+    parameter START = 32'h00000000;
+    parameter WATCHDOG_TIMEOUT_CYCLES = 500;  // Adjust this value as needed
+    
     reg [31:0] current_state, next_state;
-    reg [31:0] watchdog_counter;
-    reg flag_prev;
+    reg [31:0] watchdog_counter;  // Counter for watchdog timer
+    reg flag_prev;  // Previous value of flag to detect edges
 
+    // Next-state logic
     always @(*) begin
         next_state = current_state;
         if (flag) begin
             case (current_state)
-                START: next_state = (input_sig = 32'h10964);
-                32'h10964: next_state = (input_sig == 32'h10965) ? 32'h10965 : ERROR;
-                32'h10965: begin
-                    if (input_sig == 32'h32617)
-                        next_state = 32'h32617;
-                    else if (input_sig == 32'h32622)
-                        next_state = 32'h32622;
-                    else
-                        next_state = ERROR;
-                end
-                32'h25120: next_state = (input_sig == 32'h25126) ? 32'h25126 : ERROR;
-                32'h25121: next_state = (input_sig == 32'h25126) ? 32'h25126 : ERROR;
-                32'h25124: begin
-                    if (input_sig == 32'h32620)
-                        next_state = 32'h32620;
-                    else if (input_sig == 32'h32621)
-                        next_state = 32'h32621;
-                    else
-                        next_state = ERROR;
-                end
-                32'h25126: begin
-                    if (input_sig == 32'h25121)
-                        next_state = 32'h25121;
-                    else if (input_sig == 32'h25127)
-                        next_state = 32'h25127;
-                    else
-                        next_state = ERROR;
-                end
-                32'h25127: next_state = (input_sig == 32'h25124) ? 32'h25124 : ERROR;
-                32'h29104: next_state = (input_sig == 32'h29107) ? 32'h29107 : ERROR;
-                32'h29105: begin
-                    if (input_sig == 32'h29110)
-                        next_state = 32'h29110;
-                    else if (input_sig == 32'h29104)
-                        next_state = 32'h29104;
-                    else
-                        next_state = ERROR;
-                end
-                32'h29107: next_state = (input_sig == 32'h32621) ? 32'h32621 : ERROR;
-                32'h29110: next_state = (input_sig == 32'h29105) ? 32'h29105 : ERROR;
-                32'h29111: next_state = (input_sig == 32'h29105) ? 32'h29105 : ERROR;
-                32'h32610: next_state = ERROR;
-                32'h32616: next_state = (input_sig == 32'h10964) ? 32'h10964 : ERROR;
-                32'h32617: next_state = (input_sig == 32'h32623) ? 32'h32623 : ERROR;
-                32'h32620: next_state = (input_sig == 32'h29111) ? 32'h29111 : ERROR;
-                32'h32621: next_state = (input_sig == 32'h46485) ? 32'h46485 : ERROR;
-                32'h32622: next_state = (input_sig == 32'h32623) ? 32'h32623 : ERROR;
-                32'h32623: next_state = (input_sig == 32'h25120) ? 32'h25120 : ERROR;
-                32'h46481: next_state = (input_sig == 32'h32610) ? 32'h32610 : ERROR;
-                32'h46482: next_state = (input_sig == 32'h46481) ? 32'h46481 : ERROR;
-                32'h46483: begin
-                    if (input_sig == 32'h46484)
-                        next_state = 32'h46484;
-                    else if (input_sig == 32'h46482)
-                        next_state = 32'h46482;
-                    else
-                        next_state = ERROR;
-                end
-                32'h46484: next_state = (input_sig == 32'h46483) ? 32'h46483 : ERROR;
-                32'h46485: next_state = (input_sig == 32'h46483) ? 32'h46483 : ERROR;
+                START: next_state = (input_sig == 32'hB593) ? 32'hB593 : ERROR;
+                32'hB593: next_state = (input_sig == 32'ha1c2) ? 32'ha1c2 : ERROR;
+                32'ha1c2: next_state = (input_sig == 32'h3be7) ? 32'h3be7 : ERROR;
+                32'h3be7: next_state = (input_sig == 32'h7dde) ? 32'h7dde : ERROR;
+                32'h7dde: next_state = (input_sig == 32'h99ab) ? 32'h99ab : ERROR;
+                32'h99ab: next_state = (input_sig == 32'hB593) ? 32'hB593 : ERROR;
                 default: next_state = ERROR;
             endcase
         end
     end
 
+    // State transition
     always @(posedge clk) begin
         if (reset) begin
             current_state <= START;
@@ -92,8 +40,13 @@ module CFC_FSM (
             flag_prev <= 0;
         end else begin
             current_state <= next_state;
+            
+            // Store previous flag value
             flag_prev <= flag;
+            
+            // Watchdog timer logic
             if (current_state != ERROR) begin
+                // Reset counter on rising edge of flag
                 if (flag && !flag_prev) begin
                     watchdog_counter <= 0;
                     watchdog_timeout <= 0;
@@ -103,12 +56,14 @@ module CFC_FSM (
                     watchdog_counter <= watchdog_counter + 1;
                 end
             end else begin
+                // Reset watchdog when in ERROR state
                 watchdog_counter <= 0;
                 watchdog_timeout <= 0;
             end
         end
     end
 
+    // Output logic
     always @(*) begin
         error = (current_state == ERROR);
     end

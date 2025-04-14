@@ -1,0 +1,10 @@
+VCD info: dumpfile CFC_tb.vcd opened for output.
+Time=0.00 ns PC=xxxxxxxx insn=xxxxxxxx dwbm_adr = xxxxxxxx dwbm_we=x dwbm_dat=xxxxxxxx
+Time=15.00 ns PC=xxxxxxxx insn=xxxxxxxx dwbm_adr = 00000000 dwbm_we=0 dwbm_dat=xxxxxxxx
+Time=25.00 ns PC=00000100 insn=xxxxxxxx dwbm_adr = 00000000 dwbm_we=0 dwbm_dat=xxxxxxxx
+Time=95.00 ns PC=00000100 insn=aa20f000 dwbm_adr = 00000000 dwbm_we=0 dwbm_dat=xxxxxxxx
+Time=145.00 ns PC=00000104 insn=aa60b593 dwbm_adr = 00000000 dwbm_we=0 dwbm_dat=xxxxxxxx
+Time=195.00 ns PC=00000108 insn=d4119800 dwbm_adr = 00000000 dwbm_we=0 dwbm_dat=xxxxxxxx
+Fault injected: 4385.00 ns
+ERROR: Watchdog 5025.00 ns
+../rtl/verilog/CFC_tb.v:311: $finish called at 5025000 (1ps)

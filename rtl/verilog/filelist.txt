@@ -9,6 +9,7 @@
 ./mor1kx_icache.v
 ./mor1kx_decode.v
 ./mor1kx_monitor.v
+./test-defines.v
 ./CFC_tb.v
 ./mor1kx_fetch_cappuccino.v
 ./mor1kx_cache_lru.v

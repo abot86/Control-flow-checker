@@ -181,7 +181,7 @@ module CFC_tb;
     .ADDR_WIDTH(32),
     .DATA_WIDTH(32),
     .MEM_SIZE(64000),
-    .INIT_FILE("testAsm_0.vmem")  //-----------------------------INSERT VMEM FILE HERE--------------------------------
+    .INIT_FILE("../mem_files/testAsm_0.vmem")
   ) inst_mem (
     .clk(clk),
     .rst(rst),
@@ -278,8 +278,8 @@ module CFC_tb;
     irq_i = 32'h0;
 
     // Dump waveforms
-    $dumpfile("mor1kx_tb.vcd");
-    $dumpvars(0, mor1kx_tb);
+    $dumpfile("CFC_tb.vcd");
+    $dumpvars(0, CFC_tb);
 
     if (! $value$plusargs("sim_random_seed=%h", sim_random_seed)) begin
         $display("ERROR: please specify +sim_random_seed=<value> to start.");

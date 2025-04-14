@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import re
-import sys
 
 # Version check
 print("Running analyze_results.py version 1.1")
@@ -74,8 +73,4 @@ def analyze_summary_log(filename):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python analyze_results.py <summary.log>")
-        sys.exit(1)
-        
-    analyze_summary_log(sys.argv[1]) 
+    analyze_summary_log("./simulation_results/summary.log") 

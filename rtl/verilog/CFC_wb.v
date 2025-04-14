@@ -29,7 +29,7 @@ module CFC_wb (
     reg        write_pending;  // New: track write operation
 
     // FSM instance
-    fsm_generated fsm (
+    CFC_FSM fsm (
         .clk(clk),
         .reset(rst),
         .flag(flag),

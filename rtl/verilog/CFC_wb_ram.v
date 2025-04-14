@@ -2,7 +2,7 @@ module CFC_wb_ram #(
   parameter ADDR_WIDTH = 32,
   parameter DATA_WIDTH = 32,
   parameter MEM_SIZE   = 1024,         // Number of 32-bit words
-  parameter INIT_FILE  = ""              // Set to file name to initialize memory
+  parameter INIT_FILE  = "../mem_files/testAsm_0.vmem"  // Set to file name to initialize memory
 )(
   input                      clk,
   input                      rst,

@@ -11,7 +11,7 @@ mkdir -p simulation_results
 
 # Compile once
 echo "Compiling testbench..."
-iverilog -Wimplicit -c filelist.txt -s mor1kx_tb -o mor1kx_tb.vvp
+iverilog -Wimplicit -I../rtl/verilog -c filelist.txt -s CFC_tb -o CFC_tb.vvp
 
 # Function to generate a random 32-bit hex number
 generate_random_seed() {
@@ -28,7 +28,7 @@ for ((i=1; i<=NUM_SIMULATIONS; i++)); do
     echo "Using random seed: 32'h$seed"
     
     # Run simulation and capture output
-    vvp mor1kx_tb.vvp +sim_random_seed=$seed 2>&1 | tee "simulation_results/simulation_$i.log"
+    vvp CFC_tb.vvp +sim_random_seed=$seed 2>&1 | tee "simulation_results/simulation_$i.log"
     
     # Extract key events from the log
     echo "Simulation $i Results:" >> simulation_results/summary.log
