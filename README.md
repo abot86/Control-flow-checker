@@ -12,31 +12,39 @@ The system then converts the compiler-generated control flow trace (testpass) in
 
 ## Usage
 
-1. **Convert the control flow trace into an FSM**  
+1. **Generate hex file (.vmem) and testpass**
+
+    We have provided the files in `modified-gcc/` that can be added to or1k-elf-gcc. However, the new build of the or1k toolchain would take too much storage, so it isn't included in this repository. 
+    
+    The toolchain build instructions can be found here: https://openrisc.io/newlib/building.html. 
+    
+    The folder in which to insert the `modified-gcc/` files can be found here: https://github.com/openrisc/or1k-gcc/tree/or1k/gcc.
+
+2. **Convert the control flow trace into an FSM**  
    Run the Python script:
    ```bash
    python3 cfg/TESTPASS_TO_FSM.py <testpass_file>
    ```
    This generates `CFC_FSM.v`, a Verilog file representing the control flow FSM.
 
-2. **Format your compiled program’s memory file**  
+3. **Format your compiled program’s memory file**  
    Use the formatter script to prepare your `.vmem` file:
    ```bash
    python3 mem_files/FORMAT_VMEM.py <input.vmem> <output.vmem>
    ```
    The formatted memory file can now be used by the testbench.
 
-3. **Insert the memory file into the testbench**  
+4. **Insert the memory file into the testbench**  
    Update the path inside `CFC_tb.v` to point to the newly formatted `.vmem` file.
 
-4. **Run the simulations**  
+5. **Run the simulations**  
    Launch 100 randomized fault-injection simulations:
    ```bash
    ./run_simulations.sh
    ```
    This will create a `simulation_results/` folder containing logs for each simulation.
 
-5. **Analyze detection effectiveness**  
+6. **Analyze detection effectiveness**  
    After simulations, evaluate how many faults were successfully detected:
    ```bash
    python3 sim/ANALYZE_RESULTS.py
@@ -69,7 +77,7 @@ These files define the RTL implementation of the control flow checker:
 - `CFC_fault_injector.v`: Module that introduces random bit flips into the PC (Program Counter) register to simulate transient faults. It enables testing the robustness of the control flow checking mechanism under fault conditions.
 - Any additional `CFC_*.v` files may contain helpers or support logic (e.g., FSM wrappers).
 
-### `modified-gcc`
+### `modified-gcc/`
 These files can be added to the or1k-elf-gcc cross compiler before building. It creates a unique signature and inserts a `sw <signature>` to the MMIO address of the CFC FSM at the beginning of each basic block.
 
 
