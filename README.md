@@ -1,6 +1,73 @@
-# Control-flow-checker
-Control flow checking implemented on openRISC architecture
+# Control Flow Checker (CFC) System
 
+## Overview
+
+This repository implements a **fault-tolerant control flow checking mechanism** on top of the openRISC mor1kx processor using an FSM-based signature approach. It is designed to detect errors in program control flow at runtime through a lightweight hardware monitor.
+
+First, a modified gcc compiler inserts instructions at the start of each basic block (a block of code with a single entry and exit point) to send a unique signature to the FSM hardware using MMIO. A resulting .vmem file and testpass file are generated.
+
+The system then converts the compiler-generated control flow trace (testpass) into a finite state machine (FSM) representation. At runtime, the processor transmits control flow signatures to this FSM, which then validates the correctness of the program's execution path. This setup is particularly useful in detecting faults from soft errors or transient faults in embedded or safety-critical applications.
+
+---
+
+## Usage
+
+1. **Convert the control flow trace into an FSM**  
+   Run the Python script:
+   ```bash
+   python3 cfg/TESTPASS_TO_FSM.py <testpass_file>
+   ```
+   This generates `CFC_FSM.v`, a Verilog file representing the control flow FSM.
+
+2. **Format your compiled program’s memory file**  
+   Use the formatter script to prepare your `.vmem` file:
+   ```bash
+   python3 mem_files/FORMAT_VMEM.py <input.vmem> <output.vmem>
+   ```
+   The formatted memory file can now be used by the testbench.
+
+3. **Insert the memory file into the testbench**  
+   Update the path inside `CFC_tb.v` to point to the newly formatted `.vmem` file.
+
+4. **Run the simulations**  
+   Launch 100 randomized fault-injection simulations:
+   ```bash
+   ./run_simulations.sh
+   ```
+   This will create a `simulation_results/` folder containing logs for each simulation.
+
+5. **Analyze detection effectiveness**  
+   After simulations, evaluate how many faults were successfully detected:
+   ```bash
+   python3 sim/ANALYZE_RESULTS.py
+   ```
+
+---
+
+## File & Directory Descriptions
+
+### `cfg/TESTPASS_TO_FSM.py`
+Parses a compiler-generated control flow trace (`testpass`) and constructs a control flow graph (CFG). This CFG is then translated into an FSM represented in Verilog (`CFC_FSM.v`), which monitors signature sequences at runtime.
+
+### `mem_files/`
+A directory containing utilities for working with memory files used in simulation.
+
+### `mem_files/FORMAT_VMEM.py`
+Processes `.vmem` files output by the modified compiler to match the format expected by the CFC testbench. This includes aligning instruction/data sections and adding padding if needed.
+
+### `sim/`
+Contains simulation utilities and result analysis tools.
+
+- `run_simulations.sh`: Bash script to automate 100 Verilog simulations with Icarus Verilog.
+- `ANALYZE_RESULTS.py`: Parses simulation logs to report how many injected faults were caught by the control flow checker.
+
+### `rtl/verilog/CFC_*`
+These files define the RTL implementation of the control flow checker:
+
+- `CFC_FSM.v`: FSM module generated from `TESTPASS_TO_FSM.py`. Represents valid control flow paths and checks signatures at runtime.
+- `CFC_tb.v`: Testbench used to run simulations and validate the CFC hardware.
+- `CFC_fault_injector.v`: Module that introduces random bit flips into the PC (Program Counter) register to simulate transient faults. It enables testing the robustness of the control flow checking mechanism under fault conditions.
+- Any additional `CFC_*.v` files may contain helpers or support logic (e.g., FSM wrappers).
 
 
 # *mor1kx* - an OpenRISC processor IP core
