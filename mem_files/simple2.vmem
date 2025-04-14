@@ -1,0 +1,8 @@
+@00000040          // Reset vector address
+15000000
+aa20F000           // l.ori r17,r0,0xF000  - High bits of MMIO address
+aa607F68           // l.ori r19,r0,0x1234  - Valid value (start point of state diagram)
+d4119800           // l.sw 0(r17),r19      // Write to FSM - This will cause an error
+aa20F000
+15000000
+13FFFFFC           // l.nop 1              // Exit

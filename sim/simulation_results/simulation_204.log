@@ -1,0 +1,5 @@
+VCD info: dumpfile mor1kx_tb.vcd opened for output.
+Fault injected: 6405.00 ns
+Fault injected: 8465.00 ns
+ERROR: FSM 8635.00 ns
+./mor1kx_tb.v:319: $finish called at 8635000 (1ps)

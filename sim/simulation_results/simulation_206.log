@@ -1,0 +1,6 @@
+VCD info: dumpfile mor1kx_tb.vcd opened for output.
+Fault injected: 10375.00 ns
+Fault injected: 11335.00 ns
+Fault injected: 13975.00 ns
+ERROR: Watchdog 15495.00 ns
+./mor1kx_tb.v:311: $finish called at 15495000 (1ps)

@@ -1,0 +1,12 @@
+@00000040      // 0x100 byte address / 4
+a8200001       // l.ori r1,r0,1      ; r1 = 1
+15000002       // l.nop 2            ; report r3
+a8400002       // l.ori r2,r0,2      ; r2 = 2
+a8600003       // l.ori r3,r0,3      ; r3 = 3
+15000002       // l.nop 2            ; report r3 (should be 3)
+e0412000       // l.add r2,r1,r2     ; r2 = r1 + r2 (1 + 2 = 3)
+e0623000       // l.add r3,r2,r3     ; r3 = r2 + r3 (3 + 3 = 6)
+15000002       // l.nop 2            ; report r3 (should be 6)
+d4230000       // l.mul r3,r2,r3     ; r3 = r2 * r3 (3 * 6 = 18)
+15000002       // l.nop 2            ; report r3 (should be 18)
+15000001       // l.nop 1            ; exit simulation
