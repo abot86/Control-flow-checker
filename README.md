@@ -69,6 +69,10 @@ These files define the RTL implementation of the control flow checker:
 - `CFC_fault_injector.v`: Module that introduces random bit flips into the PC (Program Counter) register to simulate transient faults. It enables testing the robustness of the control flow checking mechanism under fault conditions.
 - Any additional `CFC_*.v` files may contain helpers or support logic (e.g., FSM wrappers).
 
+### `modified-gcc`
+These files can be added to the or1k-elf-gcc cross compiler before building. It creates a unique signature and inserts a `sw <signature>` to the MMIO address of the CFC FSM at the beginning of each basic block.
+
+
 
 # *mor1kx* - an OpenRISC processor IP core
 
